@@ -45,7 +45,15 @@ INSTALLED_APPS = [
     'orders',
     'accounts',
     'billing',
+    'addresses',
+    'analytics',
+    'django_jenkins',
 ]
+
+AUTH_USER_MODEL = 'accounts.User'
+
+FORCE_SESSION_TO_ONE =   False
+FORCE_INACTIVE_USER_ENDSESSION = False
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -94,7 +102,13 @@ DATABASES = {
 }
 
 
-
+JENKINS_TASKS = (
+    'django_jenkins.tasks.run_pep8',
+    'django_jenkins.tasks.run_pyflakes',
+    'django_jenkins.tasks.run_jslint',
+    'django_jenkins.tasks.run_csslint',
+    'django_jenkins.tasks.run_sloccount'
+)
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 

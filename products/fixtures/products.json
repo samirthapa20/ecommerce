@@ -1,0 +1,58 @@
+[
+{
+    "model": "products.product",
+    "pk": 1,
+    "fields": {
+        "title": "Shirt",
+        "slug": "shirt",
+        "description": "Sgute",
+        "price": "89.00",
+        "image": "products/33576722/33576722.jpg",
+        "featured": false,
+        "active": true,
+        "timestamp": "2020-04-27T11:33:14.387Z"
+    }
+},
+{
+    "model": "products.product",
+    "pk": 2,
+    "fields": {
+        "title": "Hat",
+        "slug": "hat",
+        "description": "This is awesome hat",
+        "price": "39.99",
+        "image": "",
+        "featured": false,
+        "active": true,
+        "timestamp": "2020-04-27T11:33:14.387Z"
+    }
+},
+{
+    "model": "products.product",
+    "pk": 3,
+    "fields": {
+        "title": "Corna",
+        "slug": "corna",
+        "description": "Quarantine",
+        "price": "55.00",
+        "image": "products/dd.jpeg",
+        "featured": true,
+        "active": true,
+        "timestamp": "2020-04-27T11:33:14.387Z"
+    }
+},
+{
+    "model": "products.product",
+    "pk": 4,
+    "fields": {
+        "title": "Laptop",
+        "slug": "laptop",
+        "description": "Predator Helios 300 Acer",
+        "price": "143.00",
+        "image": "products/1542685984/1542685984.png",
+        "featured": false,
+        "active": true,
+        "timestamp": "2020-04-30T05:36:40.868Z"
+    }
+}
+]
