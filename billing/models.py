@@ -64,6 +64,11 @@ class BillingProfile(models.Model):
 			return default_cards.first()
 		return None
 
+	def set_cards_inactive(self):
+		cards_qs = self.get_cards()
+		cards_qs.update(active=False)
+		return cards_qs.filter(active=True).count()
+
 	
 
 def billing_profile_created_receiver(sender, instance, *args, **kwargs):

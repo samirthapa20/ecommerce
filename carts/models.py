@@ -17,7 +17,7 @@ class CartManager(models.Manager):
 				cart_obj.user = request.user
 				cart_obj.save()
 		else:
-			cart_obj = Cart.objects.new(user= request.user)
+			cart_obj = Cart.objects.new(user=request.user)
 			new_obj = True
 			request.session['cart_id'] = cart_obj.id
 		return cart_obj, new_obj
@@ -41,6 +41,15 @@ class Cart(models.Model):
 
 	def __str__(self):
 		return str(self.id)
+
+	@property
+	def is_digital(self):
+		qs = self.products.all()
+		new_qs = qs.filter(is_digital=False)
+		if new_qs.exists():
+			return False
+		return True
+	
 
 def m2m_changed_cart_receiver(sender, instance, action, *args, **kwargs):
 	if action == 'post_add' or action == 'post_remove' or action == 'post_clear':

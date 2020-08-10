@@ -31,6 +31,7 @@ def cart_detail_api_view(request):
 
 def cart_home(request):
 	cart_obj, new_obj = Cart.objects.new_or_get(request)
+	print(cart_obj.is_digital)
 	return render(request, "carts/home.html",{"cart": cart_obj})
 
 def cart_update(request):
@@ -66,10 +67,11 @@ def checkout_home(request):
 	order_obj = None
 	if cart_created or cart_obj.products.count()==0:
 		return redirect('cart:home')
-	login_form = LoginForm()
+	login_form = LoginForm(request)
 	guest_form = GuestForm()
 	address_form = AddressForm()
 	billing_address_id = request.session.get('billing_address_id', None)
+	shipping_address_required = not cart_obj.is_digital
 	shipping_address_id = request.session.get('shipping_address_id', None)	
 	address_qs = None
 	billing_profile, billing_profile_created = BillingProfile.objects.new_or_get(request)
@@ -92,6 +94,21 @@ def checkout_home(request):
 
 		has_card = billing_profile.has_card
 
+		if request.method == "POST":
+			is_prepared = order_obj.check_done()
+			if is_prepared:
+				did_charge, crg_msg = billing_profile.charge(order_obj)
+				if did_charge:
+					order_obj.mark_paid() # sort a signal for us
+					request.session['cart_items'] = 0
+					del request.session['cart_id']
+					if not billing_profile.user:
+						billing_profile.set_cards_inactive()
+					return redirect("cart:success")
+				else:
+					print(crg_msg)
+					return redirect("cart:checkout")
+
 
 	# if request.method == "POST":
 	# 	is_prepared = order_obj.check_done()
@@ -108,9 +125,9 @@ def checkout_home(request):
 	# 			print(crg_msg)
 	# 			return redirect("cart:checkout")
 
-	if request.method == "POST":
-		did_charge, crg_msg = billing_profile.charge(order_obj)
-		return redirect("cart:success")
+	# if request.method == "POST":
+	# 	did_charge, crg_msg = billing_profile.charge(order_obj)
+	# 	return redirect("cart:success")
 	# 	is_done = order_obj.check_done()
 		
 	# 	if is_done:
@@ -129,6 +146,7 @@ def checkout_home(request):
 		"address_qs" : address_qs,
 		"has_card": has_card,
 		"publish_key": STRIPE_PUB_KEY,
+		"shipping_address_required": shipping_address_required,
 		}
 	return render(request,"carts/checkout.html",context)
 

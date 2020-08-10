@@ -1,6 +1,7 @@
 from django import forms
-from django.contrib.auth import get_user_model
+from django.contrib.auth import authenticate, login, get_user_model
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
+from .signals import user_logged_in
 
 
 User = get_user_model()
@@ -50,7 +51,11 @@ class UserAdminCreationForm(forms.ModelForm):
 
 
 
-
+class UserDetailChangeForm(forms.ModelForm):
+    full_name = forms.CharField(label='Name',required=False)
+    class Meta:
+        model = User
+        fields = ['full_name']
 
 class GuestForm(forms.Form):
 	email = forms.EmailField()
@@ -83,7 +88,29 @@ class RegisterForm(forms.ModelForm):
         return user
 
 class LoginForm(forms.Form):
-	email = forms.EmailField(label='Email')
-	password = forms.CharField(widget=forms.PasswordInput)
+    email = forms.EmailField(label='Email')
+    password = forms.CharField(widget=forms.PasswordInput)
+    
+    def __init__(self, request, *args, **kwargs):
+        self.request = request
+        super(LoginForm, self).__init__(*args, **kwargs)
+
+    def clean(self):
+        request = self.request
+        data = self.cleaned_data
+        email = data.get("email")
+        password = data.get("password")
+        user = authenticate(request, username=email, password=password)
+        if user is None:
+            raise forms.ValidationError("Invalid credentials")
+        login(request,user)
+        self.user = user
+        user_logged_in.send(user.__class__, instance=user, request=request)
+        try:
+            del request.session['guest_email_id']
+        except:
+            pass
+        return data
 
 
+        

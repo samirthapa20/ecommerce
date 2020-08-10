@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+    'jet',
+    'jet.dashboard',
     'products',
     'search',
     'tags',
@@ -48,12 +49,18 @@ INSTALLED_APPS = [
     'addresses',
     'analytics',
     'django_jenkins',
+    'marketing',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
 
 FORCE_SESSION_TO_ONE =   False
 FORCE_INACTIVE_USER_ENDSESSION = False
+
+
+MAILCHIMP_API_KEY = "0712b1b4ef1adfd2f6c8c6eceba4e50f-us10"
+MAILCHIMP_DATA_CENTER = "us10"
+MAILCHIMP_EMAIL_LIST_ID = "2353b656d7"
 
 STRIPE_SECRET_KEY = "sk_test_29qj2rCWkOGkoIKcqvXyqCdn"
 STRIPE_PUB_KEY = 'pk_test_DNh8PSYumjRId06k4bOKjk4q'
@@ -87,9 +94,10 @@ TEMPLATES = [
     },
 ]
 
+
 WSGI_APPLICATION = 'ecommerce.wsgi.application'
 
-
+JET_INDEX_DASHBOARD = 'dashboard.CustomIndexDashboard'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
